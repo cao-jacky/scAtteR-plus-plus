@@ -17,6 +17,13 @@ Prerequisites are for OpenCV and CUDA to be pre-installed before compiling the c
 
 
 1. Ensure `OpenCV` and `CUDA` are installed 
+dire
+2. Clone scAtteR repository and the submodules for the server
+
+```sh
+git clone --recurse-submodules https://github.com/cao-jacky/scAtteR
+```
+
 2. Install `CudaSift` 
 
 ```sh
