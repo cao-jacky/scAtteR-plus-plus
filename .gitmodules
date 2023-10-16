@@ -10,3 +10,6 @@
 [submodule "lib/libpca"]
 	path = lib/libpca
 	url = https://github.com/spinlockirqsave/libpca-1.2.11.git
+[submodule "server/lib/cudasift"]
+	path = server/lib/cudasift
+	url = https://github.com/Celebrandil/CudaSift.git
