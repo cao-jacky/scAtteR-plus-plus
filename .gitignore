@@ -1,13 +1,8 @@
 *~
 *.o
 *.tar
-/logs_server/*.txt
-/logs_devices/*.txt
-/lib/cudasift/CMakeCache.txt
 
+server/lib/cudasift/CMakeFiles/
+server/lib/cudasift/CMakeCache.txt
 
-ar_server.tar.gz
-
-src/build/
-
-lib/cudasift/CMakeFiles/
+server/src/build/

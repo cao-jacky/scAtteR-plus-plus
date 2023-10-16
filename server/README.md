@@ -10,36 +10,32 @@ The server component of the *scAtteR* system as described in the paper, "Charact
   - `CudaSift` - CUDA version of SIFT with detection, extraction, matching
   - `Eigen` - Dense data structure
   - `VLFeat` - CPU GMM training
+  - `nlohmann/json` for JSON structures in C++
 
-### Installation/Running
+### Installation and preparation
 
 Prerequisites are for OpenCV and CUDA to be pre-installed before compiling the code
 
 
 1. Ensure `OpenCV` and `CUDA` are installed 
-dire
-2. Clone scAtteR repository and the submodules for the server
+2. Clone the scAtteR repository and the required submodules 
 
 ```sh
 git clone --recurse-submodules https://github.com/cao-jacky/scAtteR
 ```
 
-2. Install `CudaSift` 
-
-```sh
-
-```
-
+3. Prepare CudaSift 
 
 ```sh
 cd lib/cudasift 
 sed -i 's/executable/library/g' CMakeLists.txt
 cmake -D CUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda-12.1 -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release .
 make
-cd ../../src/build
-make
-./server service[primary/sift/encoding/lsh/matching]
 ```
+
+4. Make the code
+
+
 
 ```sh
 /home/ar_server/src/build/server primary & /home/SidecarQueue -entry=true -p=50001 -next=172.18.0.3:50002 -sidecar=0.0.0.0:5000
