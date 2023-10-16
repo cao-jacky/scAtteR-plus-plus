@@ -17,23 +17,37 @@ The server component of the *scAtteR* system as described in the paper, "Charact
 Prerequisites are for OpenCV and CUDA to be pre-installed before compiling the code
 
 
-1. Ensure `OpenCV` and `CUDA` are installed 
+1. Ensure `OpenCV`, `CUDA`, and `nlohmann/json` are installed
+
+The JSON library can be installed through the following command
+
+```sh
+sudo apt-get install nhlohmann-json3-dev
+```
+
 2. Clone the scAtteR repository and the required submodules 
 
 ```sh
 git clone --recurse-submodules https://github.com/cao-jacky/scAtteR
 ```
 
-3. Prepare CudaSift 
+3. Compile CudaSift and the ensure correct path to CUDA Toolkit root, e.g., `/usr/local/cuda-12.1`
 
 ```sh
-cd lib/cudasift 
+cd server/lib/cudasift 
 sed -i 's/executable/library/g' CMakeLists.txt
-cmake -D CUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda-12.1 -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release .
+cmake -D CUDA_TOOLKIT_ROOT_DIR=PATH_TO_CUDA -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release .
 make
 ```
 
-4. Make the code
+4. Compile scAtteR's server
+
+```sh
+cd ../..
+mkdir build && cd build
+cmake ..
+make
+```
 
 
 
@@ -60,11 +74,6 @@ Plus the program was compiled with the following CUDA/GCC/G++ compilers:
 - GCC: 7.4.0
 - G++: 7.4.0
 
-### Testing notes
-
-- 181019: Combined the cache processes and the recognition processes into one "server" - caching now appears to work 
-
-- 031019: Disabled the cache server since somewhere in the caching pipeline, the cache server would crash. 
 
 
 
