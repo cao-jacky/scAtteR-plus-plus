@@ -15,6 +15,15 @@ The server component of the *scAtteR* system as described in the paper, "Charact
 
 Prerequisites are for OpenCV and CUDA to be pre-installed before compiling the code
 
+
+1. Ensure `OpenCV` and `CUDA` are installed 
+2. Install `CudaSift` 
+
+```sh
+
+```
+
+
 ```sh
 cd lib/cudasift 
 sed -i 's/executable/library/g' CMakeLists.txt
