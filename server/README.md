@@ -4,57 +4,82 @@ The server component of the *scAtteR* system as described in the paper, "Charact
 
 ### Dependencies
 
-  - `OpenCV` - tested with version 4.1
-  - `CUDA` - tested with version 10.1
-  - `FALCONN` - CPU LSH
+  - `OpenCV` - tested with version 4.7.0
+  - `CUDA` - tested with version 12.1
+  - `grpc`
+  - `nlohmann/json` for JSON structures in C++
+
+
+The following depdencies are included as submodules in the repository
+  - [`FALCONN`](https://github.com/cao-jacky/FALCONN.git) - CPU LSH, library modified from [FALCONN](https://github.com/FALCONN-LIB/FALCONN)
   - `CudaSift` - CUDA version of SIFT with detection, extraction, matching
   - `Eigen` - Dense data structure
   - `VLFeat` - CPU GMM training
-  - `nlohmann/json` for JSON structures in C++
 
 ### Installation and preparation
 
-Prerequisites are for OpenCV and CUDA to be pre-installed before compiling the code
+Ensure that `OpenCV` and `CUDA` are installed before following these instructions. There are considerable numbers of tutorials on how to do so, please find a relevant webpage online for these libraries. 
 
-
-1. Ensure `OpenCV`, `CUDA`, and `nlohmann/json` are installed
-
-The JSON library can be installed through the following command
+Here are the build instructions to get the `scAtteR` server software succesfully running. VIM is used here, but feel free to use your favourite preferred code editor instead. 
 
 ```sh
-sudo apt-get install nhlohmann-json3-dev
-```
+# Ensure that the nlohmann/json library is installed
+sudo apt-get update
+sudo apt-get install nlohmann-json3-dev
 
-2. Clone the scAtteR repository and the required submodules 
-
-```sh
+# Clone the scAtteR repository and the required submodules
 git clone --recurse-submodules https://github.com/cao-jacky/scAtteR
-```
 
-3. Compile CudaSift and the ensure correct path to CUDA Toolkit root, e.g., `/usr/local/cuda-12.1`
-
-```sh
+# Configure the CudaSift library to replace old dependencies
 cd server/lib/cudasift 
+
+vim CMakeLists.txt 
+
+# Update CMake version
+:%s/cmake_minimum_required(VERSION 2.6)/cmake_minimum_required(VERSION 3.22)/g 
+
+# Removing unnecessary REQUIRED parameter
+:%s/find_package(OpenCV REQUIRED)/find_package(OpenCV)/g 
+
+# Update the NVIDIA GPU architecture sm_xy version according to your hardware https://arnon.dk/matching-sm-architectures-arch-and-gencode-for-various-nvidia-cards/
+:%s/sm_35/sm_60/g 
+
+# Allow CudaSift to compile with any gcc version and not just gcc-6
+:%s/gcc-6/gcc/g 
+
+# Change CUDA to call a library and not an executable
+:%s/cuda_add_executable/cuda_add_library/g 
+
+# Save changes to CMakeLists.txt and quit
+:wq
+
+# Compile CudaSift
 sed -i 's/executable/library/g' CMakeLists.txt
-cmake -D CUDA_TOOLKIT_ROOT_DIR=PATH_TO_CUDA -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release .
+cmake -D CUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release .
 make
-```
 
-4. Compile scAtteR's server
+# Update VLFeat library to function properly with scAtteR 
+cd ../vlfeat
 
-```sh
-cd ../..
+vim vl/kmeans.c
+:%s/default(none)//g
+:wq
+
+# Return to scAtteR server's root source files and compile
+cd ../../src
 mkdir build && cd build
 cmake ..
-make
-```
 
-Now, the executable `server` can be used to run the different services 
+# When building scAtteR, there may be several errors which occur. This is due to incompatabilities between libraries or NVIDIA GPU hardware. 
+make 
+
+```
+Now, the executable `server` can be used to run the different available services of the augmented reality pipeline.  
 
 
 ### Deployment specifications
 
-The servers were ran on a machine with the following specs:
+The server was developed and tested on a machine with the following specifications:
 
 - CPU: Intel Core i7-8700 3.20GHz x 12
 - GPU: GeForce RTX 2080 Ti
@@ -63,9 +88,9 @@ The servers were ran on a machine with the following specs:
 
 Plus the program was compiled with the following CUDA/GCC/G++ compilers:
 
-- CUDA: 10.1
-- GCC: 7.4.0
-- G++: 7.4.0
+- CUDA: 12.1
+- GCC: 11.4.0
+- G++: 11.4.0
 
 
 
