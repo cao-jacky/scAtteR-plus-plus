@@ -365,7 +365,7 @@ int main(int argc, char **argv)
     string binary_directory_string = binary_directory.string();
 
     // Load service details from the JSON
-    string service_details_path = binary_directory_string + "/../../data/service_details_oakestra.json";
+    string service_details_path = binary_directory_string + "/../../data/service_details_default.json";
 
     ifstream sdd(service_details_path);
     json sdd_json = json::parse(sdd);
