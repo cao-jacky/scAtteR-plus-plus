@@ -13,12 +13,10 @@ import cv2
 
 from threading import Thread
 
-
 def print_json(client_id, frame_no, message):
     print(
         f'{{\\"service_name\\": \\"client\\", \\"id\\": \\"{client_id}\\", \\"frame_no\\": \\"{frame_no}\\", \\"timestamp\\": \\"{time.time_ns()/1000/1000}\\", \\"message\\": \\"{message}\\"}}'
     )
-
 
 def listen_data(sock):
     while True:
@@ -35,9 +33,6 @@ def listen_data(sock):
             f"Received results for Frame {frame_id} that has a size of {results_size} marker(s)",
         )
 
-        # print("received message: %s" % data)
-
-
 def send_data(client_id, frame_type, frame_no, frame_buffer, sock, main_ip, main_port):
     # preparing the packet to be sent
     frame_bytes = ""
@@ -50,19 +45,12 @@ def send_data(client_id, frame_type, frame_no, frame_buffer, sock, main_ip, main
     payload_size = frame_len + 44
     frame_array = bytearray(payload_size)
 
-    # distributed system
     frame_array[0:4] = bytearray(client_id, "utf-8")  # client_id
     frame_array[4:8] = (frame_no).to_bytes(4, "little")  # frame_id
     frame_array[8:12] = (frame_type).to_bytes(4, "little")  # frame_type
     frame_array[12:16] = frame_len.to_bytes(4, "little")  # frame_len
     frame_array[40:44] = (0).to_bytes(4, "big")  # sift_len
     frame_array[44 : frame_len + 44] = frame_bytes  # frame_data
-
-    # single process system
-    # frame_array[0:4] = (frame_no).to_bytes(4, 'little')    # frame_id
-    # frame_array[4:8] = (frame_type).to_bytes(4, 'little') # frame_type
-    # frame_array[8:12] = (frame_len).to_bytes(4, 'little')   # frame_len
-    # frame_array[12:frame_len+16] = frame_bytes             # frame_data
 
     if (frame_type == 2) & (frame_len < 2000):
         return
@@ -78,15 +66,11 @@ def send_data(client_id, frame_type, frame_no, frame_buffer, sock, main_ip, main
 def main():
     # hardcoding the server IP and port, and the input file
     server_ip = "192.168.1.102"
-    # server_ip = "10.30.100.1"
-    server_ip = "172.21.209.103"
-    server_ip = "0.0.0.0"
     server_port = 50501
     input_file = "input.mp4"
 
     if server_ip and server_port and input_file:
         client_id = "".join(random.choices(string.ascii_letters + string.digits, k=4))
-        # print(f'{time.time_ns()/1000} [STATUS {client_id} client] Client created and assigned ID of {client_id}')
         print_json(client_id, 0, f"Client created and assigned ID of {client_id}")
         print_json(
             client_id, 0, f"Details of main service provided: {server_ip}:{server_port}"
@@ -98,15 +82,7 @@ def main():
         client_assigned_port = sock.getsockname()[1]
         print_json(client_id, 0, f"Port {client_assigned_port} is bound to the client")
 
-        # send_data(client_id, 0, 0, "", sock, server_ip, server_port)
-        # print_json(
-        #     client_id,
-        #     0,
-        #     f"Sending initial echo message to main to self-register client details",
-        # )
-
         # create separate thread to listen for messages
-        # create threads
         thread = Thread(target=listen_data, args=(sock,))
 
         # start the threads
@@ -131,10 +107,6 @@ def main():
                         fps = cap.get(cv2.CAP_PROP_FPS)
                         print_json(client_id, 0, f"Sending video at {fps} FPS")
 
-                        # total_frames = cap.get(cv2.CAP_PROP_FRAME_COUNT)
-                        # print_json(
-                        #     client_id, f'Video file has {total_frames} frames')
-
                         while True:
                             now = time.time()
                             ret, frame = cap.read()
@@ -143,9 +115,7 @@ def main():
 
                             # preprocess the frame by greyscaling and resizing the resolution
                             scale_percent = 60  # percent of original size
-                            # int(frame.shape[1] * scale_percent / 100)
                             width = 480
-                            # int(frame.shape[0] * scale_percent / 100)
                             height = 270
                             dim = (width, height)
 
@@ -158,11 +128,6 @@ def main():
                             retval, frame_buffer = cv2.imencode(
                                 ".jpg", frame_resized, encoding_params
                             )
-                            # if frame_count < 3:
-                            #     cv2.imwrite(
-                            #         f'frame{frame_count}.jpg', frame_resized)
-                            # else:
-                            #     break
                             time_end = time.time_ns() / 1000 / 1000
                             print_json(
                                 client_id,

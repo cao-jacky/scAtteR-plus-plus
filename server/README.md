@@ -1,6 +1,6 @@
 ## scAtteR server
 
-The server component of the *scAtteR* system as described in the paper, "Characterizing Distributed Mobile Augmented Reality Applications at the Edge".
+The server component of the `scAtteR` system as described in the paper, "Characterizing Distributed Mobile Augmented Reality Applications at the Edge".
 
 ### Dependencies
 
