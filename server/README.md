@@ -1,6 +1,6 @@
-## scAtteR server
+## scAtteR server++
 
-The server component of the `scAtteR` system as described in the paper, "Characterizing Distributed Mobile Augmented Reality Applications at the Edge".
+The server component of the `scAtteR++` system as described in the paper, "Characterizing Distributed Mobile Augmented Reality Applications at the Edge".
 
 ### Dependencies
 
@@ -20,15 +20,15 @@ The following depdencies are included as submodules in the repository
 
 Ensure that `OpenCV`, `CUDA`, and `grpc` are installed before following these instructions. There are considerable numbers of tutorials on how to do so, please find a relevant webpage online for these libraries. 
 
-Here are the build instructions to get the `scAtteR` server software succesfully running. VIM is used here, but feel free to use your favourite preferred code editor instead. 
+Here are the build instructions to get the `scAtteR++` server software succesfully running. VIM is used here, but feel free to use your favourite preferred code editor instead. 
 
 ```sh
 # Ensure that the nlohmann/json library is installed
 sudo apt-get update
 sudo apt-get install nlohmann-json3-dev
 
-# Clone the scAtteR repository and the required submodules
-git clone --recurse-submodules https://github.com/cao-jacky/scAtteR
+# Clone the scAtteR++ repository and the required submodules
+git clone --recurse-submodules https://github.com/cao-jacky/scAtteR-plus-plus
 
 # Configure the CudaSift library to replace old dependencies
 cd server/lib/cudasift 
@@ -58,19 +58,19 @@ sed -i 's/executable/library/g' CMakeLists.txt
 cmake -D CUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release .
 make
 
-# Update VLFeat library to function properly with scAtteR 
+# Update VLFeat library to function properly with scAtteR++ 
 cd ../vlfeat
 
 vim vl/kmeans.c
 :%s/default(none)//g
 :wq
 
-# Return to scAtteR server's source files and compile
+# Return to scAtteR++ server's source files and compile
 cd ../../src
 mkdir build && cd build
 cmake ..
 
-# When building scAtteR, there may be several errors which occur. This is due to incompatabilities between libraries or NVIDIA GPU hardware, and must be debugged accordingly. We apologise that there cannot be more help with this. 
+# When building scAtteR++, there may be several errors which occur. This is due to incompatabilities between libraries or NVIDIA GPU hardware, and must be debugged accordingly. We apologise that there cannot be more help with this. 
 make 
 
 ```
@@ -95,8 +95,6 @@ Here is an example service structure and explanations:
     }
 }
 ```
-
-
 
 ### Deployment specifications
 
